@@ -1,4 +1,4 @@
-module github.com/maximka200/proto200
+module github.com/maximka200/buffpr
 
 go 1.22.4
 
