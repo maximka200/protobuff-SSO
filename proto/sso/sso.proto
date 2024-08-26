@@ -12,6 +12,16 @@ service Auth {
   // IsAdmin checks whether a user is an admin.
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc CreateApp(CreateAppRequest) returns (CreateAppResponse);
+}
+
+message CreateAppRequest {
+  string name = 1;
+  string secret = 2;
+}
+
+message CreateAppResponse {
+  int64 app_id = 1;
 }
 
 message IsAdminRequest {
