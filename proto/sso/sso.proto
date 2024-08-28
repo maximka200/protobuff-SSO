@@ -11,8 +11,17 @@ service Auth {
   rpc Login (LoginRequest) returns (LoginResponse);
   // IsAdmin checks whether a user is an admin.
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc CreateApp(CreateAppRequest) returns (CreateAppResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+message DeleteUserRequest {
+  string email = 1;
+  int64 app_id = 2;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
 }
 
 message CreateAppRequest {
@@ -30,11 +39,13 @@ message IsAdminRequest {
 
 message IsAdminResponse {
   bool is_admin = 1; 
+  int64 app_id = 2;
 }
 
 message RegisterRequest {
   string email = 1; 
   string password = 2; 
+  int64 app_id = 3;
 }
 
 message RegisterResponse {
@@ -49,12 +60,4 @@ message LoginRequest {
 
 message LoginResponse {
   string token = 1; 
-}
-
-message LogoutRequest {
-  string token = 1; 
-}
-
-message LogoutResponse {
-  bool success = 1; 
 }
