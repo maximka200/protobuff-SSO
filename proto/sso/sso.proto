@@ -57,11 +57,12 @@ message Role {
 message RegisterRequest {
   string email = 1; 
   string password = 2; 
-  LoginResponse login = 3;
+  repeated Role roles = 3;
 }
 
 message RegisterResponse {
   int64 user_id = 1; 
+  LoginResponse login = 3;
 }
 
 message LoginRequest {
