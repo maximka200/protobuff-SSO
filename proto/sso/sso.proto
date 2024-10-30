@@ -11,6 +11,8 @@ service Auth {
   rpc Login (LoginRequest) returns (LoginResponse);
   // IsAdmin checks whether a user is an admin.
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
+  // Roles get roles array
+  rpc Roles(RolesRequest) returns (RolesResponse);
   rpc CreateApp(CreateAppRequest) returns (CreateAppResponse);
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 }
@@ -38,6 +40,18 @@ message IsAdminRequest {
 
 message IsAdminResponse {
   bool is_admin = 1; 
+}
+
+message RolesResponse {
+  repeated Role role = 1;
+}
+
+message RolesRequest {
+  int64 user_id = 1; 
+}
+
+message Role {
+  string role = 1;
 }
 
 message RegisterRequest {
