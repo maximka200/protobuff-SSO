@@ -22,7 +22,8 @@ const (
 	Auth_Register_FullMethodName   = "/auth.Auth/Register"
 	Auth_Login_FullMethodName      = "/auth.Auth/Login"
 	Auth_IsAdmin_FullMethodName    = "/auth.Auth/IsAdmin"
-	Auth_Roles_FullMethodName      = "/auth.Auth/Roles"
+	Auth_GetRoles_FullMethodName   = "/auth.Auth/GetRoles"
+	Auth_SetRoles_FullMethodName   = "/auth.Auth/SetRoles"
 	Auth_CreateApp_FullMethodName  = "/auth.Auth/CreateApp"
 	Auth_DeleteUser_FullMethodName = "/auth.Auth/DeleteUser"
 )
@@ -37,8 +38,9 @@ type AuthClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
-	// Roles get roles array
-	Roles(ctx context.Context, in *RolesRequest, opts ...grpc.CallOption) (*RolesResponse, error)
+	// Get and set roles
+	GetRoles(ctx context.Context, in *GetRolesRequest, opts ...grpc.CallOption) (*GetRolesResponse, error)
+	SetRoles(ctx context.Context, in *SetRolesRequest, opts ...grpc.CallOption) (*SetRolesResponse, error)
 	CreateApp(ctx context.Context, in *CreateAppRequest, opts ...grpc.CallOption) (*CreateAppResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 }
@@ -81,10 +83,20 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 	return out, nil
 }
 
-func (c *authClient) Roles(ctx context.Context, in *RolesRequest, opts ...grpc.CallOption) (*RolesResponse, error) {
+func (c *authClient) GetRoles(ctx context.Context, in *GetRolesRequest, opts ...grpc.CallOption) (*GetRolesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RolesResponse)
-	err := c.cc.Invoke(ctx, Auth_Roles_FullMethodName, in, out, cOpts...)
+	out := new(GetRolesResponse)
+	err := c.cc.Invoke(ctx, Auth_GetRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authClient) SetRoles(ctx context.Context, in *SetRolesRequest, opts ...grpc.CallOption) (*SetRolesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetRolesResponse)
+	err := c.cc.Invoke(ctx, Auth_SetRoles_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -121,8 +133,9 @@ type AuthServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
-	// Roles get roles array
-	Roles(context.Context, *RolesRequest) (*RolesResponse, error)
+	// Get and set roles
+	GetRoles(context.Context, *GetRolesRequest) (*GetRolesResponse, error)
+	SetRoles(context.Context, *SetRolesRequest) (*SetRolesResponse, error)
 	CreateApp(context.Context, *CreateAppRequest) (*CreateAppResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	mustEmbedUnimplementedAuthServer()
@@ -144,8 +157,11 @@ func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*LoginResp
 func (UnimplementedAuthServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAdmin not implemented")
 }
-func (UnimplementedAuthServer) Roles(context.Context, *RolesRequest) (*RolesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Roles not implemented")
+func (UnimplementedAuthServer) GetRoles(context.Context, *GetRolesRequest) (*GetRolesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRoles not implemented")
+}
+func (UnimplementedAuthServer) SetRoles(context.Context, *SetRolesRequest) (*SetRolesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetRoles not implemented")
 }
 func (UnimplementedAuthServer) CreateApp(context.Context, *CreateAppRequest) (*CreateAppResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateApp not implemented")
@@ -228,20 +244,38 @@ func _Auth_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_Roles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RolesRequest)
+func _Auth_GetRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRolesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).Roles(ctx, in)
+		return srv.(AuthServer).GetRoles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Auth_Roles_FullMethodName,
+		FullMethod: Auth_GetRoles_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).Roles(ctx, req.(*RolesRequest))
+		return srv.(AuthServer).GetRoles(ctx, req.(*GetRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Auth_SetRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).SetRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_SetRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).SetRoles(ctx, req.(*SetRolesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -302,8 +336,12 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auth_IsAdmin_Handler,
 		},
 		{
-			MethodName: "Roles",
-			Handler:    _Auth_Roles_Handler,
+			MethodName: "GetRoles",
+			Handler:    _Auth_GetRoles_Handler,
+		},
+		{
+			MethodName: "SetRoles",
+			Handler:    _Auth_SetRoles_Handler,
 		},
 		{
 			MethodName: "CreateApp",
