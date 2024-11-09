@@ -48,11 +48,11 @@ message SetRolesResponse {
 }
 
 message GetRolesRequest {
-  repeated Role roles = 1;
+  string email = 1;
 }
 
 message GetRolesResponse {
-  string email = 1;
+  repeated Role roles = 1;
 }
 
 message SetRolesRequest {
