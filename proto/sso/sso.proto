@@ -43,8 +43,9 @@ message IsAdminResponse {
   bool is_admin = 1; 
 }
 
-message SetRolesResponse {
-  repeated Role roles = 1;
+message SetRolesRequest {
+  string email = 1;
+  repeated Role roles = 2;
 }
 
 message GetRolesRequest {
@@ -55,7 +56,7 @@ message GetRolesResponse {
   repeated Role roles = 1;
 }
 
-message SetRolesRequest {
+message SetRolesResponse {
   bool ok = 1;
 }
 
